@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
 import counterReducer from './store/reducers/counter';
 import resultReducer from './store/reducers/result';
 import { Provider } from 'react-redux';
@@ -15,7 +16,7 @@ const rootReducer = combineReducers({
   res: resultReducer
 });
 
-// middleware
+// middleware runs b/w the dispatching of actions to the reducers
 const logger = store => {
   return next => {
     return action => {
@@ -35,7 +36,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 // use the applyMiddleware enhancer to pass one
 // or multiple instances of middleware to the store
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger)));
+const store = createStore(rootReducer, composeEnhancers(
+  applyMiddleware(logger, thunk)
+));
 
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
 registerServiceWorker();
