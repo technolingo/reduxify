@@ -16,11 +16,16 @@ export const storeResultSync = r => {
 export const storeResultAsync = r => {
   // return an anonymous function that receives dispatch as a param.
   // this anonymous function will then be excuted by the redux-thunk middleware
-  // so that redux-thunk will enforce the timeout by blocking
-  // the dispatched action and dispatching the action again later
-  return dispatch => {
+  // so that redux-thunk will excute the async code and wait for the result
+  // by blocking the dispatched action and dispatching the action again later
+  return (dispatch, getState) => {
     // put async code here
     setTimeout(() => {
+      // this anon func also takes getState as an optional param
+      // BEST PRACTICE: don't over use getState here, pass everything
+      // you need from the component
+      const prevResult = getState().ctr.counter;
+      console.log('Before Transformation: ' + prevResult);
       dispatch(storeResultSync(r));
     }, 2000);
   };
